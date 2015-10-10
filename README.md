@@ -10,4 +10,4 @@ A detailed description can be found in my <a href="http://blog.brakmic.com/writi
 
 # License
 
-< href="https://github.com/brakmic/TwitterClient/blob/master/LICENSE">MIT</a>
+<a href="https://github.com/brakmic/TwitterClient/blob/master/LICENSE">MIT</a>
