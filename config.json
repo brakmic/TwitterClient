@@ -1,0 +1,46 @@
+{
+  "config":{
+    "services": {
+      "db": {
+        "active"           : false,
+        "connectionstring" : "DSN=YOUR_DSN_NAME;Uid=YOUR_ID;Pwd=YOUR_PWD"
+      },
+      "twitter": {
+        "consumerKey"    : "",
+        "consumerSecret" : "",
+        "accessToken"    : "",
+        "accessSecret"   : ""
+      }
+    },
+    "ignore": {
+      "spammers": [
+        "cleargrip",
+        "homeaiinfo",
+        "mantac06",
+        "jeanneereynolds",
+        "whmeanor",
+        "searchholistics",
+        "123hypnosis",
+        "hexatechlabs",
+        "bigdatatweetbot",
+        "visagetech",
+        "aidotech",
+        "d3jsviz",
+        "shakamunyi",
+        "retweetjava",
+        "innova_scape"
+      ],
+    "terms": [
+        "aidotech"
+      ]
+    },
+    "filter": [
+         "cplusplus",
+         "cppcon",
+         "datascience",
+         "machinelearning",
+         "brakmic",
+         "troisdorf"
+    ]
+  }
+}
