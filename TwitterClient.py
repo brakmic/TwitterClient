@@ -21,11 +21,6 @@ from tweepy import Stream, OAuthHandler
 from tweepy.streaming import StreamListener
 import json
 
-CONSUMER_KEY     = u''
-CONSUMER_SECRET  = u''
-ACCESS_TOKEN     = u''
-ACCESS_SECRET    = u''
-
 DEFAULT_FORE = Fore.YELLOW
 DEFAULT_BACK = Back.BLACK
 
@@ -170,6 +165,11 @@ def usage():
      print(u'Usage: twitter_client.py --config=[JSON_formatted_config]')
 
 def start_client(_json):
+
+    global CONSUMER_KEY
+    global CONSUMER_SECRET
+    global ACCESS_TOKEN
+    global ACCESS_SECRET
     hash_tags = None
     connection_string = ''
     persist = False
