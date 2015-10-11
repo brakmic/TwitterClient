@@ -22,11 +22,6 @@ from tweepy.streaming import StreamListener
 import json
 _persist   = True
 
-#CONSUMER_KEY    = u'bkFopGVOWnWgbbFV0sfpfTZCC'
-#CONSUMER_SECRET = u'RUxJQTL9z4zBDsjw89BZrI13Nx2SPPEBJEuyASp1H93AdgZGNo'
-#ACCESS_TOKEN    = u'21581491-gkbEXQN3ilmpJ0TTS336WbAAoNwWJaxY9WWJfQ4tG'
-#ACCESS_SECRET   = u'lLGJHQ1Pp69WROBwN6DSew8bjw4xppqiTqAQKCcAYJin4'
-
 CONSUMER_KEY     = u''
 CONSUMER_SECRET  = u''
 ACCESS_TOKEN     = u''
