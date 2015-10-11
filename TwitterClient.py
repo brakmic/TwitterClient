@@ -148,7 +148,7 @@ class Listener(StreamListener):
     def print_colorized(self, line):
         """ Colorize console output """
         for term in self.hashtags:
-            line = re.sub(ur'(' + term + ur')', Style.BRIGHT + Fore.RED +
+            line = re.sub(ur'(' + re.escape(term) + ur')', Style.BRIGHT + Fore.RED +
                                         Back.BLACK + ur'\1' + Fore.RESET + Back.RESET,
                                         line.lower(), re.UNICODE)
         print(line.encode('utf-8','replace'))
