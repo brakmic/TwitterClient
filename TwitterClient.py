@@ -3,7 +3,7 @@
 #==============================================================================
 # A simple twitter client capable of persisting data to a DB
 # Usage: python client.py --config=config.json
-# To persist to a database a valid DNS entry is needed.
+# To persist to a database a valid connection string is needed.
 # Also, create a proper Tweets table. Check 'insert' method in DbConnector.
 # =============================================================================
 
@@ -28,7 +28,8 @@ colormap = {
     0: Fore.RED,
     1: Fore.GREEN,
     2: Fore.YELLOW,
-    3: Fore.MAGENTA
+    3: Fore.MAGENTA,
+    4: Fore.CYAN
 }
 
 class TweetEntry(object):
@@ -132,7 +133,7 @@ class Listener(StreamListener):
         count = 0
         for tag in self.hashtags:
             if(count == max):
-                count -= 1
+                count = 0
             self.colorized_hashtags[tag] = colormap[count]
             count += 1
 
