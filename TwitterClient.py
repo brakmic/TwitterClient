@@ -20,13 +20,11 @@ from datetime import datetime
 from tweepy import Stream, OAuthHandler
 from tweepy.streaming import StreamListener
 import json
-_persist   = True
 
 CONSUMER_KEY     = u''
 CONSUMER_SECRET  = u''
 ACCESS_TOKEN     = u''
 ACCESS_SECRET    = u''
-DATABASE_DSN     = u''
 
 DEFAULT_FORE = Fore.YELLOW
 DEFAULT_BACK = Back.BLACK
@@ -57,11 +55,11 @@ class TweetEntry(object):
 class DbConnector(object):
     """ Helper class for managing DB access """
     cursor = None
-    def __init__(self, dsn_name):
-        self.connect(dsn_name)
+    def __init__(self, connection_string):
+        self.connect(connection_string)
 
-    def connect(self, dsn_name):
-        self.conn = pypyodbc.connect(dsn_name)
+    def connect(self, connection_string):
+        self.conn = pypyodbc.connect(connection_string)
         self.cursor = self.conn.cursor()
         print(u'Database connection established')
 
@@ -89,13 +87,17 @@ class Listener(StreamListener):
     ignored_users      = []
     accepted_langs     = []
     ignored_terms      = []
-    def __init__(self, hash_tags, ignore_users, ignore_terms, accept_langs):
-        self.hashtags       = list(hash_tags)
-        self.ignored_users  = list(ignore_users)
-        self.ignored_terms  = list(ignore_terms)
-        self.accepted_langs = list(accept_langs)
+    persist            = False
+    connection_string  = None
+    def __init__(self, hash_tags, ignore_users, ignore_terms, accept_langs, persist = False, connection_string = None):
+        self.hashtags          = list(hash_tags)
+        self.ignored_users     = list(ignore_users)
+        self.ignored_terms     = list(ignore_terms)
+        self.accepted_langs    = list(accept_langs)
+        self.persist           = persist
+        self.connection_string = connection_string
         self.assign_hashtag_colors()
-        if _persist:
+        if self.persist:
             self.connect_db()
             print(u'Initialized Twitter Listener with DB')
         else:
@@ -112,7 +114,7 @@ class Listener(StreamListener):
         lang     = parsed['lang']
         db_entry = TweetEntry(username, tweet, self.hashtags)
         if self.is_acceptable(username, tweet, lang):
-            if _persist:
+            if self.persist:
                 self.db.insert(db_entry)
             line = username.ljust(20) + u' | ' + tweet.rjust(20)
             self.print_colorized(line)
@@ -152,13 +154,15 @@ class Listener(StreamListener):
 
     def connect_db(self):
         """ Connect with DB by using DSN info """
-        self.db = DbConnector(DATABASE_DSN)
+        self.db = DbConnector(self.connection_string)
 
-def activate_twitter(hash_tags = [], ignore_users = [], ignore_terms = [], accept_langs = []):
+def activate_twitter(hash_tags = [], ignore_users = [],
+                        ignore_terms = [], accept_langs = [],
+                        persist = False, connection_string = None):
     """ Connect to Twitter API """
     auth                        = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_SECRET)
-    listener                    = Listener(hash_tags, ignore_users, ignore_terms, accept_langs)
+    listener                    = Listener(hash_tags, ignore_users, ignore_terms, accept_langs, persist, connection_string)
     twitter_stream              = Stream(auth, listener)
     twitter_stream.filter(track =hash_tags)
 
@@ -167,6 +171,8 @@ def usage():
 
 def start_client(_json):
     hash_tags = None
+    connection_string = ''
+    persist = False
     # load ignored users
     ignore_users = [_user for _user in _json['config']['ignore']['users']]
     ignore_terms = [_term for _term in _json['config']['ignore']['terms']]
@@ -187,16 +193,16 @@ def start_client(_json):
     # configure persistence
     database = _json['config']['services']['db']
     if(database['active'] == True):
-        _persist     = True
-        DATABASE_DSN = database['dsn']
+        persist     = True
+        connection_string = database['connectionstring']
     else:
-        _persist = False
-        DATABASE_DSN = None
+        persist = False
+        connection_string = None
     # configure filtering of messages
     hash_tags = _json['config']['filter']
     print(u'Using filter: {0}'.format(hash_tags))
     hash_tags = [tag.lower() for tag in hash_tags]
-    activate_twitter(hash_tags, ignore_users, ignore_terms, accept_langs)
+    activate_twitter(hash_tags, ignore_users, ignore_terms, accept_langs, persist, connection_string)
 
 def main(argv):
     try:
