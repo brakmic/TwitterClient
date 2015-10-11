@@ -3,7 +3,7 @@
     "services": {
       "db": {
         "active"           : false,
-        "connectionstring" : "DSN=YOUR_DSN_NAME;Uid=YOUR_ID;Pwd=YOUR_PWD"
+        "connectionstring" : ""
       },
       "twitter": {
         "consumerKey"    : "",
@@ -12,8 +12,14 @@
         "accessSecret"   : ""
       }
     },
+    "accept": {
+      "languages": [
+        "en",
+        "de"
+      ]
+    },
     "ignore": {
-      "spammers": [
+      "users": [
         "cleargrip",
         "homeaiinfo",
         "mantac06",
@@ -31,16 +37,17 @@
         "innova_scape"
       ],
     "terms": [
-        "aidotech"
+         "aidotech"
       ]
     },
     "filter": [
-         "cplusplus",
-         "cppcon",
-         "datascience",
-         "machinelearning",
-         "brakmic",
-         "troisdorf"
+      "c++",
+      "cplusplus",
+      "datascience",
+      "machinelearning",
+      "python",
+      "brakmic",
+      "troisdorf"
     ]
   }
 }
