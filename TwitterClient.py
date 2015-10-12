@@ -42,7 +42,7 @@ class TweetEntry(object):
         self.hashtags = list(hash_tags)
     def to_string(self):
         """ Returns the tweet as a well-formatted string """
-        return u'{0} | {1}'.format(self.username.decode('utf-8','replace'),
+        return '{0} | {1}'.format(self.username.decode('utf-8','replace'),
                                    self.tweet.decode('utf-8','replace').replace('\n', ' ').replace('\r', ''))
 
 class DbConnector(object):
@@ -54,7 +54,7 @@ class DbConnector(object):
     def connect(self, connection_string):
         self.conn = pypyodbc.connect(connection_string)
         self.cursor = self.conn.cursor()
-        print(u'Database connection established')
+        print('Database connection established')
 
     def insert(self, TweetEntry):
         self.cursor.execute('''INSERT INTO [dbo].[Tweets]
@@ -92,10 +92,10 @@ class Listener(StreamListener):
         self.assign_hashtag_colors()
         if self.persist:
             self.connect_db()
-            print(u'Initialized Twitter Listener with DB')
+            print('Initialized Twitter Listener with DB')
         else:
-            print(u'Initialized Twitter Listener without DB')
-        print(u'======================= TWEETS =======================')
+            print('Initialized Twitter Listener without DB')
+        print('======================= TWEETS =======================')
 
     def on_data(self, data):
         """ Must be implemented so the TwitterStream instance cann call it """
@@ -109,7 +109,7 @@ class Listener(StreamListener):
         if self.is_acceptable(username, tweet, lang):
             if self.persist:
                 self.db.insert(db_entry)
-            line = username.ljust(20) + u' | ' + tweet.rjust(20)
+            line = username.ljust(20) + ' | ' + tweet.rjust(20)
             self.print_colorized(line)
         return True
 
@@ -132,9 +132,9 @@ class Listener(StreamListener):
             if(count == max):
                 count = 0
             self.colorized_hashtags[tag] = colormap[count]
-            print(Style.BRIGHT + colormap[count] + Back.BLACK + u'set tag ' +
-                                                            tag + u' to this color'
-                                                            + Fore.RESET + Back.RESET + u'')
+            print(Style.BRIGHT + colormap[count] + Back.BLACK + 'set tag ' +
+                                                            tag + ' to this color'
+                                                            + Fore.RESET + Back.RESET + '')
             count += 1
 
     def on_error(self, status):
@@ -144,7 +144,7 @@ class Listener(StreamListener):
         """ Colorize console output """
         for term in self.hashtags:
             line = re.sub(ur'(' + re.escape(term) + ur')', self.colorized_hashtags[term] +
-                                        Style.BRIGHT + Back.BLACK + ur'\1' + Fore.RESET + Back.RESET + u'',
+                                        Style.BRIGHT + Back.BLACK + ur'\1' + Fore.RESET + Back.RESET + '',
                                         line.lower(), re.UNICODE)
         print(line.encode('utf-8','replace'))
 
@@ -163,7 +163,7 @@ def activate_twitter(hash_tags = [], ignore_users = [],
     twitter_stream.filter(track =hash_tags)
 
 def usage():
-     print(u'Usage: twitter_client.py --config=[JSON_formatted_config]')
+     print('Usage: twitter_client.py --config=[JSON_formatted_config]')
 
 def start_client(_json):
 
@@ -180,11 +180,11 @@ def start_client(_json):
     # accept only messages written in following languages
     accept_langs = [_lang for _lang in _json['config']['accept']['languages']]
     if(len(ignore_users) > 0):
-        print(u'Ignoring users: {0}'.format(ignore_users))
+        print('Ignoring users: {0}'.format(json.dumps(ignore_users)))
     if(len(ignore_terms)):
-        print(u'Ignoring terms: {0}'.format(ignore_terms))
+        print('Ignoring terms: {0}'.format(json.dumps(ignore_terms)))
     if(len(accept_langs) > 0):
-        print(u'Accepting only languages: {0}'.format(accept_langs))
+        print('Accepting only languages: {0}'.format(json.dumps(accept_langs)))
     # configure twitter api access
     access          = _json['config']['services']['twitter']
     CONSUMER_KEY    = access['consumerKey']
@@ -201,7 +201,7 @@ def start_client(_json):
         connection_string = None
     # configure filtering of messages
     hash_tags = _json['config']['filter']
-    print(u'Using filter: {0}'.format(hash_tags))
+    print('Using filter: {0}'.format(json.dumps(hash_tags)))
     hash_tags = [tag.lower() for tag in hash_tags]
     activate_twitter(hash_tags, ignore_users, ignore_terms, accept_langs, persist, connection_string)
 
@@ -219,7 +219,7 @@ def main(argv):
             global _debug
             _debug = True
         elif opt in ("-c","--config"):
-            print(u'Loading config from file {0}'.format(arg))
+            print('Loading config from file {0}'.format(arg))
             with codecs.open(arg,'r', encoding='utf-8') as config_file:
                 _json = json.load(config_file)
                 start_client(_json)
