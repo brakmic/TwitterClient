@@ -28,8 +28,10 @@ colormap = {
     0: Fore.RED,
     1: Fore.GREEN,
     2: Fore.YELLOW,
-    3: Fore.MAGENTA,
-    4: Fore.CYAN
+    3: Fore.BLUE,
+    4: Fore.WHITE,
+    5: Fore.MAGENTA,
+    6: Fore.CYAN
 }
 
 class TweetEntry(object):
@@ -132,9 +134,10 @@ class Listener(StreamListener):
         max = len(colormap)
         count = 0
         for tag in self.hashtags:
-            if(count == max):
+            if(count > max):
                 count = 0
             self.colorized_hashtags[tag] = colormap[count]
+            print(Style.BRIGHT + Back.CYAN + colormap[count] + u'set tag ' + tag + ' to this color' + Fore.RESET + Back.RESET)
             count += 1
 
     def on_error(self, status):
@@ -143,8 +146,8 @@ class Listener(StreamListener):
     def print_colorized(self, line):
         """ Colorize console output """
         for term in self.hashtags:
-            line = re.sub(ur'(' + re.escape(term) + ur')', Style.BRIGHT + self.colorized_hashtags[term] +
-                                        Style.DIM + DEFAULT_BACK + ur'\1' + Fore.RESET + Back.RESET + Style.RESET_ALL,
+            line = re.sub(ur'(' + re.escape(term) + ur')', self.colorized_hashtags[term] +
+                                        Style.BRIGHT + Back.CYAN + ur'\1' + Fore.RESET + Back.RESET,
                                         line.lower(), re.UNICODE)
         print(line.encode('utf-8','replace'))
 
