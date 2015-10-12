@@ -6,7 +6,7 @@ A detailed description can be found in my <a href="http://blog.brakmic.com/writi
 
 # Screenshot
 
-<img src="http://fs5.directupload.net/images/151010/x5eiqjfg.png" width="600" height="400">
+<img src="http://fs5.directupload.net/images/151012/k57a5jqy.png" width="600" height="400">
 
 # License
 
