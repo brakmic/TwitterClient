@@ -21,16 +21,12 @@ from tweepy import Stream, OAuthHandler
 from tweepy.streaming import StreamListener
 import json
 
-DEFAULT_FORE = Fore.YELLOW
-DEFAULT_BACK = Back.BLACK
-
 colormap = {
     0: Fore.RED,
     1: Fore.GREEN,
-    2: Fore.YELLOW,
-    3: Fore.BLUE,
-    4: Fore.WHITE,
-    5: Fore.MAGENTA
+    2: Fore.BLUE,
+    3: Fore.CYAN,
+    4: Fore.MAGENTA
 }
 
 class TweetEntry(object):
@@ -136,7 +132,9 @@ class Listener(StreamListener):
             if(count == max):
                 count = 0
             self.colorized_hashtags[tag] = colormap[count]
-            print(Style.BRIGHT + Back.CYAN + colormap[count] + u'set tag ' + tag + ' to this color' + Fore.RESET + Back.RESET)
+            print(Style.BRIGHT + colormap[count] + Back.BLACK + u'set tag ' +
+                                                            tag + u' to this color'
+                                                            + Fore.RESET + Back.RESET + u'')
             count += 1
 
     def on_error(self, status):
@@ -146,7 +144,7 @@ class Listener(StreamListener):
         """ Colorize console output """
         for term in self.hashtags:
             line = re.sub(ur'(' + re.escape(term) + ur')', self.colorized_hashtags[term] +
-                                        Style.BRIGHT + Back.CYAN + ur'\1' + Fore.RESET + Back.RESET,
+                                        Style.BRIGHT + Back.BLACK + ur'\1' + Fore.RESET + Back.RESET + u'',
                                         line.lower(), re.UNICODE)
         print(line.encode('utf-8','replace'))
 
