@@ -30,8 +30,7 @@ colormap = {
     2: Fore.YELLOW,
     3: Fore.BLUE,
     4: Fore.WHITE,
-    5: Fore.MAGENTA,
-    6: Fore.CYAN
+    5: Fore.MAGENTA
 }
 
 class TweetEntry(object):
@@ -134,7 +133,7 @@ class Listener(StreamListener):
         max = len(colormap)
         count = 0
         for tag in self.hashtags:
-            if(count > max):
+            if(count == max):
                 count = 0
             self.colorized_hashtags[tag] = colormap[count]
             print(Style.BRIGHT + Back.CYAN + colormap[count] + u'set tag ' + tag + ' to this color' + Fore.RESET + Back.RESET)
