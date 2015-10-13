@@ -132,9 +132,9 @@ class Listener(StreamListener):
             if(count == max):
                 count = 0
             self.colorized_hashtags[tag] = colormap[count]
-            print(Style.BRIGHT + colormap[count] + Back.BLACK + 'set tag ' +
+            print(Style.BRIGHT + colormap[count] + 'set tag ' +
                                                             tag + ' to this color'
-                                                            + Fore.RESET + Back.RESET + '')
+                                                            + Fore.RESET)
             count += 1
 
     def on_error(self, status):
@@ -144,7 +144,7 @@ class Listener(StreamListener):
         """ Colorize console output """
         for term in self.hashtags:
             line = re.sub(ur'(' + re.escape(term) + ur')', self.colorized_hashtags[term] +
-                                        Style.BRIGHT + Back.BLACK + ur'\1' + Fore.RESET + Back.RESET + '',
+                                        Style.BRIGHT + ur'\1' + Fore.RESET,
                                         line.lower(), re.UNICODE)
         print(line.encode('utf-8','replace'))
 
