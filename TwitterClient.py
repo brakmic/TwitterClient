@@ -203,7 +203,11 @@ def start_client(_json):
     hash_tags = _json['config']['filter']
     print('Using filter: {0}'.format(json.dumps(hash_tags)))
     hash_tags = [tag.lower() for tag in hash_tags]
-    activate_twitter(hash_tags, ignore_users, ignore_terms, accept_langs, persist, connection_string)
+    try:
+        activate_twitter(hash_tags, ignore_users, ignore_terms, accept_langs, persist, connection_string)
+    except:
+        err = sys.exc_info()[0]
+        print('Error => {}'.format(err))
 
 def main(argv):
     try:
