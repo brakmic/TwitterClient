@@ -146,7 +146,7 @@ class Listener(StreamListener):
             line = re.sub(ur'(' + re.escape(term) + ur')', self.colorized_hashtags[term] +
                                         Style.BRIGHT + ur'\1' + Fore.RESET,
                                         line.lower(), re.UNICODE)
-        print(line.encode('utf-8','replace'))
+        print(line.replace('\n', ' ').replace('\r', '').encode('utf-8','replace'))
 
     def connect_db(self):
         """ Connect with DB by using DSN info """
