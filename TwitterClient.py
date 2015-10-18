@@ -31,10 +31,6 @@ colormap = {
 
 class TweetEntry(object):
     """ Represents a tweet message """
-    username = None
-    tweet    = None
-    created  = None
-    hashtags = []
     def __init__(self, user, message, hash_tags=[]):
         self.username = user
         self.tweet    = message
@@ -47,7 +43,6 @@ class TweetEntry(object):
 
 class DbConnector(object):
     """ Helper class for managing DB access """
-    cursor = None
     def __init__(self, connection_string):
         self.connect(connection_string)
 
@@ -74,21 +69,16 @@ class DbConnector(object):
 
 class Listener(StreamListener):
     """Twitter listener implementation"""
-    db                 = None
-    hashtags           = []
-    colorized_hashtags = {}
-    ignored_users      = []
-    accepted_langs     = []
-    ignored_terms      = []
-    persist            = False
-    connection_string  = None
-    def __init__(self, hash_tags, ignore_users, ignore_terms, accept_langs, persist = False, connection_string = None):
+    def __init__(self, hash_tags, ignore_users,
+                    ignore_terms, accept_langs,
+                    persist = False, connection_string = None):
         self.hashtags          = list(hash_tags)
         self.ignored_users     = list(ignore_users)
         self.ignored_terms     = list(ignore_terms)
         self.accepted_langs    = list(accept_langs)
         self.persist           = persist
         self.connection_string = connection_string
+        self.colorized_hashtags = {}
         self.assign_hashtag_colors()
         if self.persist:
             self.connect_db()
