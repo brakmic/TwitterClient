@@ -5,7 +5,6 @@
 # Usage: python client.py --config=config.json
 # To persist to a database a valid connection string is needed.
 # Also, create a proper Tweets table. Check 'insert' method in DbConnector.
-# Note (July, 26, 2016): only for python 3
 # =============================================================================
 
 from __future__ import unicode_literals
@@ -39,7 +38,7 @@ class TweetEntry(object):
         self.hashtags = list(hash_tags)
     def to_string(self):
         """ Returns the tweet as a well-formatted string """
-        return '{0} | {1}'.format(self.username, self.tweet.replace('\n', ' ').replace('\r', ''))
+        return '{0} | {1}'.format(self.username.decode(), self.tweet.decode().replace('\n', ' ').replace('\r', ''))
 
 class DbConnector(object):
     """ Helper class for managing DB access """
@@ -136,7 +135,7 @@ class Listener(StreamListener):
             line = re.sub('(' + re.escape(term) + ')', self.colorized_hashtags[term] +
                                         Style.BRIGHT + '\1' + Fore.RESET,
                                         line.lower(), re.UNICODE)
-        print(line.replace('\n', ' ').replace('\r', ''))
+        print(line.replace('\n', ' ').replace('\r', '').encode())
 
     def connect_db(self):
         """ Connect with DB by using DSN info """
