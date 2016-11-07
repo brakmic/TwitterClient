@@ -38,8 +38,8 @@ class TweetEntry(object):
         self.hashtags = list(hash_tags)
     def to_string(self):
         """ Returns the tweet as a well-formatted string """
-        return '{0} | {1}'.format(self.username.decode('utf-8','replace'),
-                                   self.tweet.decode('utf-8','replace').replace('\n', ' ').replace('\r', ''))
+        return '{0} | {1}'.format(self.username.encode("ascii","ignore"), 
+                self.tweet.encode("ascii","ignore").replace('\n', ' ').replace('\r', ''))
 
 class DbConnector(object):
     """ Helper class for managing DB access """
@@ -92,7 +92,7 @@ class Listener(StreamListener):
         parsed   = json.loads(data,encoding='utf-8')
         if not 'user' in parsed:
             return True
-        username = parsed["user"]["screen_name"].decode('utf-8','replace')
+        username = parsed["user"]["screen_name"]
         tweet    = parsed["text"]
         lang     = parsed['lang']
         db_entry = TweetEntry(username, tweet, self.hashtags)
@@ -133,10 +133,10 @@ class Listener(StreamListener):
     def print_colorized(self, line):
         """ Colorize console output """
         for term in self.hashtags:
-            line = re.sub(ur'(' + re.escape(term) + ur')', self.colorized_hashtags[term] +
-                                        Style.BRIGHT + ur'\1' + Fore.RESET,
+            line = re.sub('(' + re.escape(term) + ')', self.colorized_hashtags[term] +
+                                        Style.BRIGHT + '\1' + Fore.RESET,
                                         line.lower(), re.UNICODE)
-        print(line.replace('\n', ' ').replace('\r', '').encode('utf-8','replace'))
+        print(line.replace('\n', ' ').replace('\r', '').encode("utf-8","ignore"))
 
     def connect_db(self):
         """ Connect with DB by using DSN info """
