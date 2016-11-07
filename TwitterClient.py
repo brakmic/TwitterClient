@@ -134,6 +134,8 @@ class Listener(StreamListener):
         print(status)
     
     def expand_urls(self, tweet, urls):
+        if len(urls) == 0: 
+            return tweet
         try:
             for entry in urls:
                 url_c = re.compile(entry['url'], re.IGNORECASE)
