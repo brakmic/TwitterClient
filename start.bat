@@ -1,3 +1,3 @@
 @echo off
 cls
-python client.py --config=config.json
+python TwitterClient.py --config=config.json
