@@ -101,7 +101,7 @@ class Listener(StreamListener):
             if self.persist:
                 self.db.insert(db_entry)
             line = username.ljust(20) + ' | ' + tweet.rjust(20)
-            self.print_colorized(line.lower())
+            self.print_colorized(line.replace('\r','').replace('\n',' '))
         return True
 
     def is_acceptable(self, username, tweet, lang):
@@ -135,7 +135,8 @@ class Listener(StreamListener):
         """ Colorize console output """
         try:
             for term in self.hashtags:
-                line = line.replace(term,self.colorized_hashtags[term] + Style.BRIGHT + term + Fore.RESET)
+                term_ci  = re.compile(term, re.IGNORECASE)
+                line = term_ci.sub(self.colorized_hashtags[term] + Style.BRIGHT + term + Fore.RESET, line)
             print(line)
         except:
             traceback.print_exc()
