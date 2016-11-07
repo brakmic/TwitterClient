@@ -39,7 +39,7 @@ class TweetEntry(object):
     def to_string(self):
         """ Returns the tweet as a well-formatted string """
         return '{0} | {1}'.format(self.username.encode("ascii","ignore"), 
-                self.tweet.encode("ascii","ignore").replace('\n', ' ').replace('\r', ''))
+					self.tweet.encode("ascii","ignore").replace('\n', ' ').replace('\r', ''))
 
 class DbConnector(object):
     """ Helper class for managing DB access """
