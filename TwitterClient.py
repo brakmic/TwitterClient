@@ -93,13 +93,15 @@ class Listener(StreamListener):
         parsed   = json.loads(data)
         if not 'user' in parsed:
             return True
-        username = parsed["user"]["screen_name"]
-        tweet    = parsed["text"]
+        username = parsed['user']['screen_name']
+        tweet    = parsed['text']
         lang     = parsed['lang']
+        urls     = parsed['entities']['urls']
         db_entry = TweetEntry(username, tweet, self.hashtags)
         if self.is_acceptable(username, tweet, lang):
             if self.persist:
                 self.db.insert(db_entry)
+            tweet = self.expand_urls(tweet, urls)
             line = username.ljust(20) + ' | ' + tweet.rjust(20)
             self.print_colorized(line.replace('\r','').replace('\n',' '))
         return True
@@ -130,6 +132,16 @@ class Listener(StreamListener):
 
     def on_error(self, status):
         print(status)
+    
+    def expand_urls(self, tweet, urls):
+        try:
+            for entry in urls:
+                url_c = re.compile(entry['url'], re.IGNORECASE)
+                tweet = url_c.sub(entry['expanded_url'], tweet)
+            return tweet
+        except:
+            traceback.print_exc()
+
 
     def print_colorized(self, line):
         """ Colorize console output """
@@ -143,6 +155,8 @@ class Listener(StreamListener):
     def connect_db(self):
         """ Connect with DB by using DSN info """
         self.db = DbConnector(self.connection_string)
+
+# -- console client code --        
 
 def activate_twitter(hash_tags = [], ignore_users = [],
                         ignore_terms = [], accept_langs = [],
