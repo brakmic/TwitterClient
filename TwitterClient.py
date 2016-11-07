@@ -90,7 +90,7 @@ class Listener(StreamListener):
 
     def on_data(self, data):
         """ Must be implemented so the TwitterStream instance cann call it """
-        parsed   = json.loads(data)
+        parsed   = json.loads(data, 'utf-8')
         if not 'user' in parsed:
             return True
         username = parsed['user']['screen_name']
@@ -138,6 +138,8 @@ class Listener(StreamListener):
             return tweet
         try:
             for entry in urls:
+                if entry['url'] is None or entry['expanded_url'] is None:
+                    continue
                 url_c = re.compile(entry['url'], re.IGNORECASE)
                 tweet = url_c.sub(entry['expanded_url'], tweet)
             return tweet
