@@ -20,6 +20,7 @@ from datetime import datetime
 from tweepy import Stream, OAuthHandler
 from tweepy.streaming import StreamListener
 import json
+import traceback
 
 colormap = {
     0: Fore.RED,
@@ -39,7 +40,7 @@ class TweetEntry(object):
     def to_string(self):
         """ Returns the tweet as a well-formatted string """
         return '{0} | {1}'.format(self.username.encode("ascii","ignore"), 
-					self.tweet.encode("ascii","ignore").replace('\n', ' ').replace('\r', ''))
+                    self.tweet.encode("ascii","ignore").replace('\n', ' ').replace('\r', ''))
 
 class DbConnector(object):
     """ Helper class for managing DB access """
@@ -89,7 +90,7 @@ class Listener(StreamListener):
 
     def on_data(self, data):
         """ Must be implemented so the TwitterStream instance cann call it """
-        parsed   = json.loads(data,encoding='utf-8')
+        parsed   = json.loads(data)
         if not 'user' in parsed:
             return True
         username = parsed["user"]["screen_name"]
@@ -100,7 +101,7 @@ class Listener(StreamListener):
             if self.persist:
                 self.db.insert(db_entry)
             line = username.ljust(20) + ' | ' + tweet.rjust(20)
-            self.print_colorized(line)
+            self.print_colorized(line.lower())
         return True
 
     def is_acceptable(self, username, tweet, lang):
@@ -132,12 +133,12 @@ class Listener(StreamListener):
 
     def print_colorized(self, line):
         """ Colorize console output """
-        for term in self.hashtags:
-            line = re.sub('(' + re.escape(term) + ')', self.colorized_hashtags[term] +
-                                        Style.BRIGHT + '\1' + Fore.RESET,
-                                        line.lower(), re.UNICODE)
-        print(line.encode("ascii","ignore").replace('\n', ' ').replace('\r', ''))
-
+        try:
+            for term in self.hashtags:
+                line = line.replace(term,self.colorized_hashtags[term] + Style.BRIGHT + term + Fore.RESET)
+            print(line)
+        except:
+            traceback.print_exc()
     def connect_db(self):
         """ Connect with DB by using DSN info """
         self.db = DbConnector(self.connection_string)
@@ -201,6 +202,7 @@ def start_client(_json):
 
 def main(argv):
     try:
+        init(wrap=True)
         opts, args = getopt.getopt(argv, "hc:d", ["help", "config="])
     except getopt.GetoptError:
         usage()
