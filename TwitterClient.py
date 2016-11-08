@@ -21,6 +21,7 @@ from tweepy import Stream, OAuthHandler
 from tweepy.streaming import StreamListener
 import json
 import traceback
+from unidecode import unidecode
 
 colormap = {
     0: Fore.RED,
@@ -90,21 +91,26 @@ class Listener(StreamListener):
 
     def on_data(self, data):
         """ Must be implemented so the TwitterStream instance cann call it """
-        parsed   = json.loads(data, 'utf-8')
-        if not 'user' in parsed:
+        try:
+            parsed   = json.loads(data, 'utf-8')
+            if not 'user' in parsed:
+                return True
+            username = parsed['user']['screen_name']
+            tweet    = parsed['text']
+            lang     = parsed['lang']
+            urls     = parsed['entities']['urls']
+            db_entry = TweetEntry(username, tweet, self.hashtags)
+            if self.is_acceptable(username, tweet, lang):
+                if self.persist:
+                    self.db.insert(db_entry)
+                tweet = self.expand_urls(tweet, urls)
+                line = username.ljust(20) + ' | ' + tweet.rjust(20)
+                clean = self.sanitize(line.replace('\r','').replace('\n',' '))
+                self.print_colorized(clean)
             return True
-        username = parsed['user']['screen_name']
-        tweet    = parsed['text']
-        lang     = parsed['lang']
-        urls     = parsed['entities']['urls']
-        db_entry = TweetEntry(username, tweet, self.hashtags)
-        if self.is_acceptable(username, tweet, lang):
-            if self.persist:
-                self.db.insert(db_entry)
-            tweet = self.expand_urls(tweet, urls)
-            line = username.ljust(20) + ' | ' + tweet.rjust(20)
-            self.print_colorized(line.replace('\r','').replace('\n',' '))
-        return True
+        except:
+             traceback.print_exc()
+
 
     def is_acceptable(self, username, tweet, lang):
         return (self.lang_ok(lang) and self.user_ok(username) and self.tweet_ok(tweet))
@@ -146,6 +152,8 @@ class Listener(StreamListener):
         except:
             traceback.print_exc()
 
+    def sanitize(self, line):
+        return unidecode(line)
 
     def print_colorized(self, line):
         """ Colorize console output """
