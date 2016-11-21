@@ -6,9 +6,9 @@ A detailed description can be found in my <a href="http://blog.brakmic.com/writi
 
 If you're experiencing Unicode issues check out [this article](http://chase-seibert.github.io/blog/2014/01/12/python-unicode-console-output.html) for possible remedy.
 
-# Screenshot
+# Demo
 
-<img src="http://fs5.directupload.net/images/151012/k57a5jqy.png" width="600" height="400">
+<img src="http://i.giphy.com/BH8n0GeS7QhOg.gif" width="600" height="400">
 
 # License
 
