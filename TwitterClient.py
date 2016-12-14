@@ -75,7 +75,7 @@ class Listener(StreamListener):
                     ignore_terms, accept_langs,
                     persist = False, connection_string = None):
         self.hashtags          = list(hash_tags)
-        self.ignored_users     = list(ignore_users)
+        self.ignored_users     = [x.lower() for x in list(ignore_users)]
         self.ignored_terms     = list(ignore_terms)
         self.accepted_langs    = list(accept_langs)
         self.persist           = persist
@@ -116,7 +116,7 @@ class Listener(StreamListener):
         return (self.lang_ok(lang) and self.user_ok(username) and self.tweet_ok(tweet))
 
     def user_ok(self, username):
-        return username not in self.ignored_users
+        return username.lower() not in self.ignored_users
 
     def tweet_ok(self, tweet):
         return not any(term in tweet for term in self.ignored_terms)
