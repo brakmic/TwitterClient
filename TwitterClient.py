@@ -146,7 +146,7 @@ class Listener(StreamListener):
             for entry in urls:
                 if entry['url'] is None or entry['expanded_url'] is None:
                     continue
-                url_c = re.compile(entry['url'], re.IGNORECASE)
+                url_c = re.compile(re.escape(entry['url']), re.IGNORECASE)
                 tweet = url_c.sub(entry['expanded_url'], tweet)
             return tweet
         except:
@@ -159,7 +159,7 @@ class Listener(StreamListener):
         """ Colorize console output """
         try:
             for term in self.hashtags:
-                term_ci  = re.compile(term, re.IGNORECASE)
+                term_ci  = re.compile(re.escape(term), re.IGNORECASE)
                 line = term_ci.sub(self.colorized_hashtags[term] + Style.BRIGHT + term + Fore.RESET, line)
             print(line)
         except:
