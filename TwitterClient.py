@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 #==============================================================================
 # A simple twitter client capable of persisting data to a DB
@@ -92,7 +92,7 @@ class Listener(StreamListener):
     def on_data(self, data):
         """ Must be implemented so the TwitterStream instance cann call it """
         try:
-            parsed   = json.loads(data, 'utf-8')
+            parsed   = json.loads(data)
             if not 'user' in parsed:
                 return True
             username = parsed['user']['screen_name']
