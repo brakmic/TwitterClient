@@ -14,7 +14,6 @@ import sys
 import getopt
 import re
 import codecs
-from random import randint
 from colorama import *
 from datetime import datetime
 from tweepy import Stream, OAuthHandler
